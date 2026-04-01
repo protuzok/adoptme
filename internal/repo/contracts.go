@@ -6,17 +6,17 @@ import (
 )
 
 type (
-	UserRepo interface {
-		CreateShelter(context.Context, entity.Shelter) error
-		CreateVolunteer(context.Context, entity.Volunteer) error
+	ShelterRepo interface {
+		Create(context.Context, entity.Shelter) error
+		GetArray(context.Context) ([]entity.Shelter, error)
 	}
 
-	CatalogRepo interface {
-		GetShelter(context.Context) ([]entity.Shelter, error)
-		GetVolunteer(context.Context) ([]entity.Volunteer, error)
+	VolunteerRepo interface {
+		Create(context.Context, entity.Volunteer) error
+		GetArray(context.Context) ([]entity.Volunteer, error)
 	}
 
-	AdoptionRepo interface {
+	AnimalRepo interface {
 		Create(context.Context, entity.Animal) error
 		UpdateOwner(context.Context) // ?
 	}
