@@ -12,12 +12,12 @@ type (
 	}
 
 	Catalog interface {
-		ListShelters()
-		ListVolunteer()
+		ListShelters(context.Context) ([]entity.Shelter, error)
+		ListVolunteer(context.Context) ([]entity.Shelter, error)
 	}
 
 	Adoption interface {
-		RegisterAnimal()
-		TransferAnimal()
+		RegisterAnimal(context.Context, entity.Animal) error
+		TransferAnimal(context.Context) error // ?
 	}
 )

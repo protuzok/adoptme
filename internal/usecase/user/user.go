@@ -12,10 +12,10 @@ type UseCase struct {
 	volunteerRepo repo.VolunteerRepo
 }
 
-func New(shr repo.ShelterRepo, vlr repo.VolunteerRepo) *UseCase {
+func New(shRepo repo.ShelterRepo, vlRepo repo.VolunteerRepo) *UseCase {
 	return &UseCase{
-		shelterRepo:   shr,
-		volunteerRepo: vlr,
+		shelterRepo:   shRepo,
+		volunteerRepo: vlRepo,
 	}
 }
 
