@@ -14,6 +14,7 @@ import (
 	context "context"
 	reflect "reflect"
 
+	uuid "github.com/google/uuid"
 	gomock "go.uber.org/mock/gomock"
 )
 
@@ -70,6 +71,21 @@ func (mr *MockShelterRepoMockRecorder) GetArray(arg0 any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetArray", reflect.TypeOf((*MockShelterRepo)(nil).GetArray), arg0)
 }
 
+// GetByID mocks base method.
+func (m *MockShelterRepo) GetByID(arg0 context.Context, arg1 uuid.UUID) (entity.Shelter, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetByID", arg0, arg1)
+	ret0, _ := ret[0].(entity.Shelter)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetByID indicates an expected call of GetByID.
+func (mr *MockShelterRepoMockRecorder) GetByID(arg0, arg1 any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByID", reflect.TypeOf((*MockShelterRepo)(nil).GetByID), arg0, arg1)
+}
+
 // MockVolunteerRepo is a mock of VolunteerRepo interface.
 type MockVolunteerRepo struct {
 	ctrl     *gomock.Controller
@@ -123,6 +139,21 @@ func (mr *MockVolunteerRepoMockRecorder) GetArray(arg0 any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetArray", reflect.TypeOf((*MockVolunteerRepo)(nil).GetArray), arg0)
 }
 
+// GetByID mocks base method.
+func (m *MockVolunteerRepo) GetByID(arg0 context.Context, arg1 uuid.UUID) (entity.Volunteer, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetByID", arg0, arg1)
+	ret0, _ := ret[0].(entity.Volunteer)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetByID indicates an expected call of GetByID.
+func (mr *MockVolunteerRepoMockRecorder) GetByID(arg0, arg1 any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByID", reflect.TypeOf((*MockVolunteerRepo)(nil).GetByID), arg0, arg1)
+}
+
 // MockAnimalRepo is a mock of AnimalRepo interface.
 type MockAnimalRepo struct {
 	ctrl     *gomock.Controller
@@ -161,14 +192,31 @@ func (mr *MockAnimalRepoMockRecorder) Create(arg0, arg1 any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockAnimalRepo)(nil).Create), arg0, arg1)
 }
 
-// UpdateOwner mocks base method.
-func (m *MockAnimalRepo) UpdateOwner(arg0 context.Context) {
+// GetByID mocks base method.
+func (m *MockAnimalRepo) GetByID(arg0 context.Context, arg1 uuid.UUID) (entity.Animal, error) {
 	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "UpdateOwner", arg0)
+	ret := m.ctrl.Call(m, "GetByID", arg0, arg1)
+	ret0, _ := ret[0].(entity.Animal)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetByID indicates an expected call of GetByID.
+func (mr *MockAnimalRepoMockRecorder) GetByID(arg0, arg1 any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByID", reflect.TypeOf((*MockAnimalRepo)(nil).GetByID), arg0, arg1)
+}
+
+// UpdateOwner mocks base method.
+func (m *MockAnimalRepo) UpdateOwner(ctx context.Context, animalID, ownerID uuid.UUID, ownerType entity.OwnerType) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateOwner", ctx, animalID, ownerID, ownerType)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
 // UpdateOwner indicates an expected call of UpdateOwner.
-func (mr *MockAnimalRepoMockRecorder) UpdateOwner(arg0 any) *gomock.Call {
+func (mr *MockAnimalRepoMockRecorder) UpdateOwner(ctx, animalID, ownerID, ownerType any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateOwner", reflect.TypeOf((*MockAnimalRepo)(nil).UpdateOwner), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateOwner", reflect.TypeOf((*MockAnimalRepo)(nil).UpdateOwner), ctx, animalID, ownerID, ownerType)
 }

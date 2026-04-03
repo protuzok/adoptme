@@ -14,6 +14,7 @@ import (
 	context "context"
 	reflect "reflect"
 
+	uuid "github.com/google/uuid"
 	gomock "go.uber.org/mock/gomock"
 )
 
@@ -109,10 +110,10 @@ func (mr *MockCatalogMockRecorder) ListShelters(arg0 any) *gomock.Call {
 }
 
 // ListVolunteer mocks base method.
-func (m *MockCatalog) ListVolunteer(arg0 context.Context) ([]entity.Shelter, error) {
+func (m *MockCatalog) ListVolunteer(arg0 context.Context) ([]entity.Volunteer, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListVolunteer", arg0)
-	ret0, _ := ret[0].([]entity.Shelter)
+	ret0, _ := ret[0].([]entity.Volunteer)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -162,15 +163,15 @@ func (mr *MockAdoptionMockRecorder) RegisterAnimal(arg0, arg1 any) *gomock.Call 
 }
 
 // TransferAnimal mocks base method.
-func (m *MockAdoption) TransferAnimal(arg0 context.Context) error {
+func (m *MockAdoption) TransferAnimal(ctx context.Context, animalID, newOwnerID uuid.UUID) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "TransferAnimal", arg0)
+	ret := m.ctrl.Call(m, "TransferAnimal", ctx, animalID, newOwnerID)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // TransferAnimal indicates an expected call of TransferAnimal.
-func (mr *MockAdoptionMockRecorder) TransferAnimal(arg0 any) *gomock.Call {
+func (mr *MockAdoptionMockRecorder) TransferAnimal(ctx, animalID, newOwnerID any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "TransferAnimal", reflect.TypeOf((*MockAdoption)(nil).TransferAnimal), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "TransferAnimal", reflect.TypeOf((*MockAdoption)(nil).TransferAnimal), ctx, animalID, newOwnerID)
 }
