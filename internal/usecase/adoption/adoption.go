@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
 
 	"github.com/google/uuid"
 
@@ -25,66 +26,89 @@ func New(anRepo repo.AnimalRepo, shRepo repo.ShelterRepo, vlRepo repo.VolunteerR
 	}
 }
 
-func (u *UseCase) RegisterAnimal(ctx context.Context, an entity.Animal) error {
+func (u *UseCase) RegisterAnimal(ctx context.Context, name, ownerId string, ownerType entity.OwnerType) (entity.Animal, error) {
+	// Check if the owner exists
 	var err error
-	switch an.OwnerType {
+	switch ownerType {
 	case entity.OwnerTypeShelter:
-		_, err = u.shelterRepo.GetByID(ctx, an.OwnerID)
+		_, err = u.shelterRepo.GetByID(ctx, ownerId)
 		if err != nil {
-			if errors.Is(err, repo.ErrNotFound) {
-				return fmt.Errorf("AdoptionUseCase - RegisterAnimal - shelter not found: %w", err)
+			if errors.Is(err, entity.ErrUserNotFound) {
+				return entity.Animal{}, fmt.Errorf("AdoptionUseCase - RegisterAnimal - shelter not found")
 			}
-			return fmt.Errorf("AdoptionUseCase - RegisterAnimal - shelter DB error: %w", err)
+			return entity.Animal{}, fmt.Errorf("AdoptionUseCase - RegisterAnimal - shelter DB error: %w", err)
 		}
 	case entity.OwnerTypeVolunteer:
-		_, err = u.volunteerRepo.GetByID(ctx, an.OwnerID)
+		_, err = u.volunteerRepo.GetByID(ctx, ownerId)
 		if err != nil {
-			if errors.Is(err, repo.ErrNotFound) {
-				return fmt.Errorf("AdoptionUseCase - RegisterAnimal - volunteer not found: %w", err)
+			if errors.Is(err, entity.ErrUserNotFound) {
+				return entity.Animal{}, fmt.Errorf("AdoptionUseCase - RegisterAnimal - volunteer not found")
 			}
-			return fmt.Errorf("AdoptionUseCase - RegisterAnimal - volunteer DB error: %w", err)
+			return entity.Animal{}, fmt.Errorf("AdoptionUseCase - RegisterAnimal - volunteer DB error: %w", err)
 		}
 	default:
-		return fmt.Errorf("AdoptionUseCase - RegisterAnimal - invalid owner type: %s", an.OwnerType)
+		return entity.Animal{}, fmt.Errorf("AdoptionUseCase - RegisterAnimal - invalid owner type: %s", ownerType)
 	}
 
-	an.ID, err = uuid.NewV7()
+	// Fill fields for animal
+	id, err := uuid.NewV7()
 	if err != nil {
-		return fmt.Errorf("AdoptionUseCase - RegisterAnimal - uuid.NewV7: %w", err)
+		return entity.Animal{}, fmt.Errorf("AdoptionUseCase - RegisterAnimal - uuid.NewV7: %w", err)
 	}
 
-	err = u.animalRepo.Create(ctx, an)
+	now := time.Now().UTC()
+
+	animal := entity.Animal{
+		ID:        id.String(),
+		OwnerID:   ownerId,
+		OwnerType: ownerType,
+		Name:      name,
+		CreatedAt: now,
+		UpdatedAt: now,
+	}
+
+	// Store animal
+	err = u.animalRepo.Store(ctx, &animal)
 	if err != nil {
-		return fmt.Errorf("AdoptionUseCase - RegisterAnimal - u.animalRepo.Create: %w", err)
+		return entity.Animal{}, fmt.Errorf("AdoptionUseCase - RegisterAnimal - u.animalRepo.Store: %w", err)
 	}
 
-	return nil
+	return animal, nil
 }
 
-func (u *UseCase) TransferAnimal(ctx context.Context, animalID uuid.UUID, newOwnerID uuid.UUID, newOwnerType entity.OwnerType) error {
+func (u *UseCase) TransferAnimal(ctx context.Context, animalID, newOwnerID string, newOwnerType entity.OwnerType) error {
+	// Check if the animal exists
 	_, err := u.animalRepo.GetByID(ctx, animalID)
 	if err != nil {
-		if errors.Is(err, repo.ErrNotFound) {
-			return fmt.Errorf("AdoptionUseCase - TransferAnimal - animal not found: %w", err)
+		if errors.Is(err, entity.ErrAnimalNotFound) {
+			return fmt.Errorf("AdoptionUseCase - TransferAnimal - %w", err)
 		}
 		return fmt.Errorf("AdoptionUseCase - TransferAnimal - animal DB error: %w", err)
 	}
 
+	// Check if the owner exists
 	switch newOwnerType {
 	case entity.OwnerTypeShelter:
 		_, err = u.shelterRepo.GetByID(ctx, newOwnerID)
 		if err != nil {
+			if errors.Is(err, entity.ErrUserNotFound) {
+				return fmt.Errorf("AdoptionUseCase - TransferAnimal - shelter not found")
+			}
 			return fmt.Errorf("AdoptionUseCase - TransferAnimal - shelter DB error: %w", err)
 		}
 	case entity.OwnerTypeVolunteer:
 		_, err = u.volunteerRepo.GetByID(ctx, newOwnerID)
 		if err != nil {
+			if errors.Is(err, entity.ErrUserNotFound) {
+				return fmt.Errorf("AdoptionUseCase - TransferAnimal - volunteer not found")
+			}
 			return fmt.Errorf("AdoptionUseCase - TransferAnimal - volunteer DB error: %w", err)
 		}
 	default:
-		return fmt.Errorf("AdoptionUseCase - TransferAnimal - invalid owner type: %s", newOwnerType)
+		return fmt.Errorf("AdoptionUseCase - TransferAnimal - invalid owner type: %s", newOwnerID)
 	}
 
+	// Update owner
 	err = u.animalRepo.UpdateOwner(ctx, animalID, newOwnerID, newOwnerType)
 	if err != nil {
 		return fmt.Errorf("AdoptionUseCase - TransferAnimal - u.animalRepo.UpdateOwner: %w", err)

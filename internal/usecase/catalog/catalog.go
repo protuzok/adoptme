@@ -10,29 +10,34 @@ import (
 type UseCase struct {
 	shelterRepo   repo.ShelterRepo
 	volunteerRepo repo.VolunteerRepo
+	animalRepo    repo.AnimalRepo
 }
 
-func New(shRepo repo.ShelterRepo, vlRepo repo.VolunteerRepo) *UseCase {
+func New(shRepo repo.ShelterRepo, vlRepo repo.VolunteerRepo, anRepo repo.AnimalRepo) *UseCase {
 	return &UseCase{
 		shelterRepo:   shRepo,
 		volunteerRepo: vlRepo,
+		animalRepo:    anRepo,
 	}
+}
+
+func list[T any](ctx context.Context, listFn func(ctx context.Context) ([]T, error), callerName string) ([]T, error) {
+	items, err := listFn(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("CatalogUseCase - %s - listFn: %w", callerName, err)
+	}
+
+	return items, nil
 }
 
 func (u UseCase) ListShelters(ctx context.Context) ([]entity.Shelter, error) {
-	shelters, err := u.shelterRepo.GetArray(ctx)
-	if err != nil {
-		return nil, fmt.Errorf("CatalogUseCase - ListShelters - u.shelterRepo.GetArray: %w", err)
-	}
-
-	return shelters, nil
+	return list(ctx, u.shelterRepo.List, "ListShelters")
 }
 
 func (u UseCase) ListVolunteer(ctx context.Context) ([]entity.Volunteer, error) {
-	volunteers, err := u.volunteerRepo.GetArray(ctx)
-	if err != nil {
-		return nil, fmt.Errorf("CatalogUseCase - ListVolunteer - u.volunteerRepo.GetArray: %w", err)
-	}
+	return list(ctx, u.volunteerRepo.List, "ListVolunteer")
+}
 
-	return volunteers, nil
+func (u UseCase) ListAnimal(ctx context.Context) ([]entity.Animal, error) {
+	return list(ctx, u.animalRepo.List, "ListAnimal")
 }

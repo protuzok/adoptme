@@ -1,10 +1,12 @@
 package entity
 
-import "github.com/google/uuid"
+import "time"
 
 type Volunteer struct {
-	ID      uuid.UUID
-	Email   string
-	Name    string
-	Surname string
+	ID           string    `json:"id" example:"550e8400-e29b-41d4-a716-446655440000"`
+	Email        string    `json:"email" example:"john@example.com"`
+	Name         string    `json:"name" example:"John"`
+	PasswordHash string    `json:"-"`
+	CreatedAt    time.Time `json:"created_at" example:"2026-01-01T00:00:00Z"`
+	UpdatedAt    time.Time `json:"updated_at" example:"2026-01-01T00:00:00Z"`
 }

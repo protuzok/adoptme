@@ -2,15 +2,14 @@ package persistent
 
 import (
 	"adoptme/internal/entity"
-	"adoptme/internal/repo"
 	"adoptme/pkg/postgres"
 	"context"
 	"errors"
 	"fmt"
 
-	"github.com/Masterminds/squirrel"
-	"github.com/google/uuid"
+	sq "github.com/Masterminds/squirrel"
 	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgconn"
 )
 
 const _defaultShelterCap = 64
@@ -19,75 +18,87 @@ type ShelterRepo struct {
 	*postgres.Postgres
 }
 
-func NewShelter(pg *postgres.Postgres) *ShelterRepo {
+func NewShelterRepo(pg *postgres.Postgres) *ShelterRepo {
 	return &ShelterRepo{pg}
 }
 
-func (s ShelterRepo) Create(ctx context.Context, sh entity.Shelter) error {
-	sql, args, err := s.Builder.
+func (r ShelterRepo) Store(ctx context.Context, sh *entity.Shelter) error {
+	sql, args, err := r.Builder.
 		Insert("shelters").
-		Columns("id, email, name").
-		Values(sh.ID, sh.Email, sh.Name).
+		Columns("id, email, name, password_hash, created_at, updated_at").
+		Values(sh.ID, sh.Email, sh.Name, sh.PasswordHash, sh.CreatedAt, sh.UpdatedAt).
 		ToSql()
 	if err != nil {
-		return fmt.Errorf("ShelterRepo - Create - s.Builder: %w", err)
+		return fmt.Errorf("ShelterRepo - Store - r.Builder: %w", err)
 	}
 
-	_, err = s.Pool.Exec(ctx, sql, args)
+	_, err = r.Pool.Exec(ctx, sql, args)
 	if err != nil {
-		return fmt.Errorf("ShelterRepo - Create - s.Pool.Exec: %w", err)
+		if pgErr, ok := errors.AsType[*pgconn.PgError](err); ok && pgErr.Code == "23505" {
+			return entity.ErrUserAlreadyExists
+		}
+
+		return fmt.Errorf("ShelterRepo - Store - r.Pool.Exec: %w", err)
 	}
 
 	return nil
 }
 
-func (s ShelterRepo) GetByID(ctx context.Context, id uuid.UUID) (entity.Shelter, error) {
-	sql, args, err := s.Builder.
-		Select("id, email, name").
+func (r ShelterRepo) GetByID(ctx context.Context, id string) (entity.Shelter, error) {
+	return r.getUser(ctx, "id", id)
+}
+
+func (r ShelterRepo) GetByEmail(ctx context.Context, email string) (entity.Shelter, error) {
+	return r.getUser(ctx, "email", email)
+}
+
+func (r ShelterRepo) getUser(ctx context.Context, column, value string) (entity.Shelter, error) {
+	sql, args, err := r.Builder.
+		Select("id, email, name, password_hash, created_at, updated_at").
 		From("shelters").
-		Where(squirrel.Eq{"id": id}).
+		Where(sq.Eq{column: value}).
 		ToSql()
 	if err != nil {
-		return entity.Shelter{}, fmt.Errorf("ShelterRepo - GetByID - s.Builder: %w", err)
+		return entity.Shelter{}, fmt.Errorf("ShelterRepo - getUser - r.Builder: %w", err)
 	}
 
-	row := s.Pool.QueryRow(ctx, sql, args)
-
 	sh := entity.Shelter{}
-	err = row.Scan(&sh.ID, &sh.Email, &sh.Name)
+
+	err = r.Pool.QueryRow(ctx, sql, args).
+		Scan(&sh.ID, &sh.Email, &sh.Name, &sh.PasswordHash, &sh.CreatedAt, &sh.UpdatedAt)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return entity.Shelter{}, fmt.Errorf("ShelterRepo - GetByID - row.Scan: %w", repo.ErrNotFound)
+			return entity.Shelter{}, entity.ErrUserNotFound
 		}
-		return entity.Shelter{}, fmt.Errorf("ShelterRepo - GetByID - row.Scan: %w", err)
+		return entity.Shelter{}, fmt.Errorf("ShelterRepo - GetByID - r.Pool.QueryRow: %w", err)
 	}
 
 	return sh, nil
 }
 
-func (s ShelterRepo) GetArray(ctx context.Context) ([]entity.Shelter, error) {
-	sql, args, err := s.Builder.
-		Select("id, email, name").
+func (r ShelterRepo) List(ctx context.Context) ([]entity.Shelter, error) {
+	sql, args, err := r.Builder.
+		Select("id, email, name, password_hash, created_at, updated_at").
 		From("shelters").
 		ToSql()
 	if err != nil {
-		return nil, fmt.Errorf("ShelterRepo - GetArray - s.Builder: %w", err)
+		return nil, fmt.Errorf("ShelterRepo - List - r.Builder: %w", err)
 	}
 
-	rows, err := s.Pool.Query(ctx, sql, args)
+	rows, err := r.Pool.Query(ctx, sql, args)
 	if err != nil {
-		return nil, fmt.Errorf("ShelterRepo - GetArray - s.Pool.Query: %w", err)
+		return nil, fmt.Errorf("ShelterRepo - List - r.Pool.Query: %w", err)
 	}
 	defer rows.Close()
 
 	shelters := make([]entity.Shelter, 0, _defaultShelterCap)
 
 	for rows.Next() {
-		sh := entity.Shelter{}
+		var sh entity.Shelter
 
-		err = rows.Scan(&sh.ID, &sh.Email, &sh.Name)
+		err = rows.Scan(&sh.ID, &sh.Email, &sh.Name, &sh.PasswordHash, &sh.CreatedAt, &sh.UpdatedAt)
 		if err != nil {
-			return nil, fmt.Errorf("ShelterRepo - GetArray - rows.Scan: %w", err)
+			return nil, fmt.Errorf("ShelterRepo - List - rows.Scan: %w", err)
 		}
 
 		shelters = append(shelters, sh)
