@@ -14,60 +14,115 @@ import (
 	context "context"
 	reflect "reflect"
 
-	uuid "github.com/google/uuid"
 	gomock "go.uber.org/mock/gomock"
 )
 
-// MockUser is a mock of User interface.
-type MockUser struct {
+// MockShelter is a mock of Shelter interface.
+type MockShelter struct {
 	ctrl     *gomock.Controller
-	recorder *MockUserMockRecorder
+	recorder *MockShelterMockRecorder
 	isgomock struct{}
 }
 
-// MockUserMockRecorder is the mock recorder for MockUser.
-type MockUserMockRecorder struct {
-	mock *MockUser
+// MockShelterMockRecorder is the mock recorder for MockShelter.
+type MockShelterMockRecorder struct {
+	mock *MockShelter
 }
 
-// NewMockUser creates a new mock instance.
-func NewMockUser(ctrl *gomock.Controller) *MockUser {
-	mock := &MockUser{ctrl: ctrl}
-	mock.recorder = &MockUserMockRecorder{mock}
+// NewMockShelter creates a new mock instance.
+func NewMockShelter(ctrl *gomock.Controller) *MockShelter {
+	mock := &MockShelter{ctrl: ctrl}
+	mock.recorder = &MockShelterMockRecorder{mock}
 	return mock
 }
 
 // EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockUser) EXPECT() *MockUserMockRecorder {
+func (m *MockShelter) EXPECT() *MockShelterMockRecorder {
 	return m.recorder
 }
 
-// RegisterShelter mocks base method.
-func (m *MockUser) RegisterShelter(arg0 context.Context, arg1 entity.Shelter) error {
+// Login mocks base method.
+func (m *MockShelter) Login(ctx context.Context, email, password string) (string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "RegisterShelter", arg0, arg1)
-	ret0, _ := ret[0].(error)
-	return ret0
+	ret := m.ctrl.Call(m, "Login", ctx, email, password)
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
-// RegisterShelter indicates an expected call of RegisterShelter.
-func (mr *MockUserMockRecorder) RegisterShelter(arg0, arg1 any) *gomock.Call {
+// Login indicates an expected call of Login.
+func (mr *MockShelterMockRecorder) Login(ctx, email, password any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RegisterShelter", reflect.TypeOf((*MockUser)(nil).RegisterShelter), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Login", reflect.TypeOf((*MockShelter)(nil).Login), ctx, email, password)
 }
 
-// RegisterVolunteer mocks base method.
-func (m *MockUser) RegisterVolunteer(arg0 context.Context, arg1 entity.Volunteer) error {
+// Register mocks base method.
+func (m *MockShelter) Register(ctx context.Context, name, email, password string) (entity.Shelter, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "RegisterVolunteer", arg0, arg1)
-	ret0, _ := ret[0].(error)
-	return ret0
+	ret := m.ctrl.Call(m, "Register", ctx, name, email, password)
+	ret0, _ := ret[0].(entity.Shelter)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
-// RegisterVolunteer indicates an expected call of RegisterVolunteer.
-func (mr *MockUserMockRecorder) RegisterVolunteer(arg0, arg1 any) *gomock.Call {
+// Register indicates an expected call of Register.
+func (mr *MockShelterMockRecorder) Register(ctx, name, email, password any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RegisterVolunteer", reflect.TypeOf((*MockUser)(nil).RegisterVolunteer), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Register", reflect.TypeOf((*MockShelter)(nil).Register), ctx, name, email, password)
+}
+
+// MockVolunteer is a mock of Volunteer interface.
+type MockVolunteer struct {
+	ctrl     *gomock.Controller
+	recorder *MockVolunteerMockRecorder
+	isgomock struct{}
+}
+
+// MockVolunteerMockRecorder is the mock recorder for MockVolunteer.
+type MockVolunteerMockRecorder struct {
+	mock *MockVolunteer
+}
+
+// NewMockVolunteer creates a new mock instance.
+func NewMockVolunteer(ctrl *gomock.Controller) *MockVolunteer {
+	mock := &MockVolunteer{ctrl: ctrl}
+	mock.recorder = &MockVolunteerMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockVolunteer) EXPECT() *MockVolunteerMockRecorder {
+	return m.recorder
+}
+
+// Login mocks base method.
+func (m *MockVolunteer) Login(ctx context.Context, email, password string) (string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Login", ctx, email, password)
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Login indicates an expected call of Login.
+func (mr *MockVolunteerMockRecorder) Login(ctx, email, password any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Login", reflect.TypeOf((*MockVolunteer)(nil).Login), ctx, email, password)
+}
+
+// Register mocks base method.
+func (m *MockVolunteer) Register(ctx context.Context, name, email, password string) (entity.Volunteer, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Register", ctx, name, email, password)
+	ret0, _ := ret[0].(entity.Volunteer)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Register indicates an expected call of Register.
+func (mr *MockVolunteerMockRecorder) Register(ctx, name, email, password any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Register", reflect.TypeOf((*MockVolunteer)(nil).Register), ctx, name, email, password)
 }
 
 // MockCatalog is a mock of Catalog interface.
@@ -94,34 +149,49 @@ func (m *MockCatalog) EXPECT() *MockCatalogMockRecorder {
 	return m.recorder
 }
 
-// ListShelters mocks base method.
-func (m *MockCatalog) ListShelters(arg0 context.Context) ([]entity.Shelter, error) {
+// ListAnimal mocks base method.
+func (m *MockCatalog) ListAnimal(ctx context.Context) ([]entity.Animal, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ListShelters", arg0)
+	ret := m.ctrl.Call(m, "ListAnimal", ctx)
+	ret0, _ := ret[0].([]entity.Animal)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListAnimal indicates an expected call of ListAnimal.
+func (mr *MockCatalogMockRecorder) ListAnimal(ctx any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAnimal", reflect.TypeOf((*MockCatalog)(nil).ListAnimal), ctx)
+}
+
+// ListShelters mocks base method.
+func (m *MockCatalog) ListShelters(ctx context.Context) ([]entity.Shelter, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListShelters", ctx)
 	ret0, _ := ret[0].([]entity.Shelter)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // ListShelters indicates an expected call of ListShelters.
-func (mr *MockCatalogMockRecorder) ListShelters(arg0 any) *gomock.Call {
+func (mr *MockCatalogMockRecorder) ListShelters(ctx any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListShelters", reflect.TypeOf((*MockCatalog)(nil).ListShelters), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListShelters", reflect.TypeOf((*MockCatalog)(nil).ListShelters), ctx)
 }
 
 // ListVolunteer mocks base method.
-func (m *MockCatalog) ListVolunteer(arg0 context.Context) ([]entity.Volunteer, error) {
+func (m *MockCatalog) ListVolunteer(ctx context.Context) ([]entity.Volunteer, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ListVolunteer", arg0)
+	ret := m.ctrl.Call(m, "ListVolunteer", ctx)
 	ret0, _ := ret[0].([]entity.Volunteer)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // ListVolunteer indicates an expected call of ListVolunteer.
-func (mr *MockCatalogMockRecorder) ListVolunteer(arg0 any) *gomock.Call {
+func (mr *MockCatalogMockRecorder) ListVolunteer(ctx any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListVolunteer", reflect.TypeOf((*MockCatalog)(nil).ListVolunteer), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListVolunteer", reflect.TypeOf((*MockCatalog)(nil).ListVolunteer), ctx)
 }
 
 // MockAdoption is a mock of Adoption interface.
@@ -149,29 +219,30 @@ func (m *MockAdoption) EXPECT() *MockAdoptionMockRecorder {
 }
 
 // RegisterAnimal mocks base method.
-func (m *MockAdoption) RegisterAnimal(arg0 context.Context, arg1 entity.Animal) error {
+func (m *MockAdoption) RegisterAnimal(ctx context.Context, name, ownerId string, ownerType entity.OwnerType) (entity.Animal, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "RegisterAnimal", arg0, arg1)
-	ret0, _ := ret[0].(error)
-	return ret0
+	ret := m.ctrl.Call(m, "RegisterAnimal", ctx, name, ownerId, ownerType)
+	ret0, _ := ret[0].(entity.Animal)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // RegisterAnimal indicates an expected call of RegisterAnimal.
-func (mr *MockAdoptionMockRecorder) RegisterAnimal(arg0, arg1 any) *gomock.Call {
+func (mr *MockAdoptionMockRecorder) RegisterAnimal(ctx, name, ownerId, ownerType any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RegisterAnimal", reflect.TypeOf((*MockAdoption)(nil).RegisterAnimal), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RegisterAnimal", reflect.TypeOf((*MockAdoption)(nil).RegisterAnimal), ctx, name, ownerId, ownerType)
 }
 
 // TransferAnimal mocks base method.
-func (m *MockAdoption) TransferAnimal(ctx context.Context, animalID, newOwnerID uuid.UUID) error {
+func (m *MockAdoption) TransferAnimal(ctx context.Context, animalID, newOwnerID string, newOwnerType entity.OwnerType) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "TransferAnimal", ctx, animalID, newOwnerID)
+	ret := m.ctrl.Call(m, "TransferAnimal", ctx, animalID, newOwnerID, newOwnerType)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // TransferAnimal indicates an expected call of TransferAnimal.
-func (mr *MockAdoptionMockRecorder) TransferAnimal(ctx, animalID, newOwnerID any) *gomock.Call {
+func (mr *MockAdoptionMockRecorder) TransferAnimal(ctx, animalID, newOwnerID, newOwnerType any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "TransferAnimal", reflect.TypeOf((*MockAdoption)(nil).TransferAnimal), ctx, animalID, newOwnerID)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "TransferAnimal", reflect.TypeOf((*MockAdoption)(nil).TransferAnimal), ctx, animalID, newOwnerID, newOwnerType)
 }

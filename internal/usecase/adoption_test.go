@@ -4,12 +4,10 @@ import (
 	"context"
 	"testing"
 
-	"github.com/google/uuid"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/mock/gomock"
 
 	"adoptme/internal/entity"
-	"adoptme/internal/repo"
 	"adoptme/internal/usecase/adoption"
 )
 
@@ -32,10 +30,12 @@ func TestRegisterAnimal(t *testing.T) {
 
 	uc, anRepo, shRepo, vlRepo := adoptionUseCase(t)
 
-	ownerID := uuid.MustParse("00000000-0000-0000-0000-000000000001")
+	ownerID := "00000000-0000-0000-0000-000000000001"
 
 	type args struct {
-		an entity.Animal
+		name      string
+		ownerID   string
+		ownerType entity.OwnerType
 	}
 	tests := []struct {
 		name    string
@@ -45,33 +45,33 @@ func TestRegisterAnimal(t *testing.T) {
 	}{
 		{
 			name: "normal register (shelter owner)",
-			args: args{an: entity.Animal{Name: "Borys", OwnerID: ownerID, OwnerType: entity.OwnerTypeShelter}},
+			args: args{name: "Borys", ownerID: ownerID, ownerType: entity.OwnerTypeShelter},
 			mock: func() {
 				shRepo.EXPECT().GetByID(gomock.Any(), ownerID).Return(entity.Shelter{ID: ownerID}, nil)
-				anRepo.EXPECT().Create(gomock.Any(), gomock.AssignableToTypeOf(entity.Animal{})).Return(nil)
+				anRepo.EXPECT().Store(gomock.Any(), gomock.AssignableToTypeOf(&entity.Animal{})).Return(nil)
 			},
 			wantErr: false,
 		},
 		{
 			name: "normal register (volunteer owner)",
-			args: args{an: entity.Animal{Name: "Murchyk", OwnerID: ownerID, OwnerType: entity.OwnerTypeVolunteer}},
+			args: args{name: "Murchyk", ownerID: ownerID, ownerType: entity.OwnerTypeVolunteer},
 			mock: func() {
 				vlRepo.EXPECT().GetByID(gomock.Any(), ownerID).Return(entity.Volunteer{ID: ownerID}, nil)
-				anRepo.EXPECT().Create(gomock.Any(), gomock.AssignableToTypeOf(entity.Animal{})).Return(nil)
+				anRepo.EXPECT().Store(gomock.Any(), gomock.AssignableToTypeOf(&entity.Animal{})).Return(nil)
 			},
 			wantErr: false,
 		},
 		{
 			name: "error: shelter not found",
-			args: args{an: entity.Animal{Name: "Borys", OwnerID: ownerID, OwnerType: entity.OwnerTypeShelter}},
+			args: args{name: "Borys", ownerID: ownerID, ownerType: entity.OwnerTypeShelter},
 			mock: func() {
-				shRepo.EXPECT().GetByID(gomock.Any(), ownerID).Return(entity.Shelter{}, repo.ErrNotFound)
+				shRepo.EXPECT().GetByID(gomock.Any(), ownerID).Return(entity.Shelter{}, entity.ErrUserNotFound)
 			},
 			wantErr: true,
 		},
 		{
 			name: "error: invalid owner type",
-			args: args{an: entity.Animal{Name: "Borys", OwnerID: ownerID, OwnerType: "alien"}},
+			args: args{name: "Borys", ownerID: ownerID, ownerType: "alien"},
 			mock: func() {
 				// No mock calls expected
 			},
@@ -84,7 +84,7 @@ func TestRegisterAnimal(t *testing.T) {
 		t.Run(localTc.name, func(t *testing.T) {
 			localTc.mock()
 
-			err := uc.RegisterAnimal(context.Background(), localTc.args.an)
+			_, err := uc.RegisterAnimal(context.Background(), localTc.args.name, localTc.args.ownerID, localTc.args.ownerType)
 
 			if localTc.wantErr {
 				require.Error(t, err)
@@ -100,12 +100,12 @@ func TestTransferAnimal(t *testing.T) {
 
 	uc, anRepo, shRepo, vlRepo := adoptionUseCase(t)
 
-	animalID := uuid.MustParse("00000000-0000-0000-0000-000000000002")
-	newOwnerID := uuid.MustParse("00000000-0000-0000-0000-000000000003")
+	animalID := "00000000-0000-0000-0000-000000000002"
+	newOwnerID := "00000000-0000-0000-0000-000000000003"
 
 	type args struct {
-		animalID     uuid.UUID
-		newOwnerID   uuid.UUID
+		animalID     string
+		newOwnerID   string
 		newOwnerType entity.OwnerType
 	}
 	tests := []struct {
@@ -141,7 +141,7 @@ func TestTransferAnimal(t *testing.T) {
 			name: "error: animal not found",
 			args: args{animalID: animalID, newOwnerID: newOwnerID, newOwnerType: entity.OwnerTypeVolunteer},
 			mock: func() {
-				anRepo.EXPECT().GetByID(gomock.Any(), animalID).Return(entity.Animal{}, repo.ErrNotFound)
+				anRepo.EXPECT().GetByID(gomock.Any(), animalID).Return(entity.Animal{}, entity.ErrAnimalNotFound)
 			},
 			wantErr: true,
 		},
@@ -150,7 +150,7 @@ func TestTransferAnimal(t *testing.T) {
 			args: args{animalID: animalID, newOwnerID: newOwnerID, newOwnerType: entity.OwnerTypeShelter},
 			mock: func() {
 				anRepo.EXPECT().GetByID(gomock.Any(), animalID).Return(entity.Animal{ID: animalID}, nil)
-				shRepo.EXPECT().GetByID(gomock.Any(), newOwnerID).Return(entity.Shelter{}, repo.ErrNotFound)
+				shRepo.EXPECT().GetByID(gomock.Any(), newOwnerID).Return(entity.Shelter{}, entity.ErrUserNotFound)
 			},
 			wantErr: true,
 		},

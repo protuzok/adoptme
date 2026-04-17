@@ -3,29 +3,27 @@ package repo
 import (
 	"adoptme/internal/entity"
 	"context"
-	"errors"
-
-	"github.com/google/uuid"
 )
-
-var ErrNotFound = errors.New("not found")
 
 type (
 	ShelterRepo interface {
-		Create(context.Context, entity.Shelter) error
-		GetByID(context.Context, uuid.UUID) (entity.Shelter, error)
-		GetArray(context.Context) ([]entity.Shelter, error)
+		Store(ctx context.Context, sh *entity.Shelter) error
+		GetByID(ctx context.Context, id string) (entity.Shelter, error)
+		GetByEmail(ctx context.Context, email string) (entity.Shelter, error)
+		List(ctx context.Context) ([]entity.Shelter, error)
 	}
 
 	VolunteerRepo interface {
-		Create(context.Context, entity.Volunteer) error
-		GetByID(context.Context, uuid.UUID) (entity.Volunteer, error)
-		GetArray(context.Context) ([]entity.Volunteer, error)
+		Store(ctx context.Context, vl *entity.Volunteer) error
+		GetByID(ctx context.Context, id string) (entity.Volunteer, error)
+		GetByEmail(ctx context.Context, email string) (entity.Volunteer, error)
+		List(ctx context.Context) ([]entity.Volunteer, error)
 	}
 
 	AnimalRepo interface {
-		Create(context.Context, entity.Animal) error
-		GetByID(context.Context, uuid.UUID) (entity.Animal, error)
-		UpdateOwner(ctx context.Context, animalID uuid.UUID, ownerID uuid.UUID, ownerType entity.OwnerType) error
+		Store(ctx context.Context, an *entity.Animal) error
+		GetByID(ctx context.Context, id string) (entity.Animal, error)
+		UpdateOwner(ctx context.Context, animalID, ownerID string, ownerType entity.OwnerType) error
+		List(ctx context.Context) ([]entity.Animal, error)
 	}
 )

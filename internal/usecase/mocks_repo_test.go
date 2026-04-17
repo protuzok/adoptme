@@ -14,7 +14,6 @@ import (
 	context "context"
 	reflect "reflect"
 
-	uuid "github.com/google/uuid"
 	gomock "go.uber.org/mock/gomock"
 )
 
@@ -42,48 +41,63 @@ func (m *MockShelterRepo) EXPECT() *MockShelterRepoMockRecorder {
 	return m.recorder
 }
 
-// Create mocks base method.
-func (m *MockShelterRepo) Create(arg0 context.Context, arg1 entity.Shelter) error {
+// GetByEmail mocks base method.
+func (m *MockShelterRepo) GetByEmail(ctx context.Context, email string) (entity.Shelter, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Create", arg0, arg1)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// Create indicates an expected call of Create.
-func (mr *MockShelterRepoMockRecorder) Create(arg0, arg1 any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockShelterRepo)(nil).Create), arg0, arg1)
-}
-
-// GetArray mocks base method.
-func (m *MockShelterRepo) GetArray(arg0 context.Context) ([]entity.Shelter, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetArray", arg0)
-	ret0, _ := ret[0].([]entity.Shelter)
+	ret := m.ctrl.Call(m, "GetByEmail", ctx, email)
+	ret0, _ := ret[0].(entity.Shelter)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// GetArray indicates an expected call of GetArray.
-func (mr *MockShelterRepoMockRecorder) GetArray(arg0 any) *gomock.Call {
+// GetByEmail indicates an expected call of GetByEmail.
+func (mr *MockShelterRepoMockRecorder) GetByEmail(ctx, email any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetArray", reflect.TypeOf((*MockShelterRepo)(nil).GetArray), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByEmail", reflect.TypeOf((*MockShelterRepo)(nil).GetByEmail), ctx, email)
 }
 
 // GetByID mocks base method.
-func (m *MockShelterRepo) GetByID(arg0 context.Context, arg1 uuid.UUID) (entity.Shelter, error) {
+func (m *MockShelterRepo) GetByID(ctx context.Context, id string) (entity.Shelter, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetByID", arg0, arg1)
+	ret := m.ctrl.Call(m, "GetByID", ctx, id)
 	ret0, _ := ret[0].(entity.Shelter)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // GetByID indicates an expected call of GetByID.
-func (mr *MockShelterRepoMockRecorder) GetByID(arg0, arg1 any) *gomock.Call {
+func (mr *MockShelterRepoMockRecorder) GetByID(ctx, id any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByID", reflect.TypeOf((*MockShelterRepo)(nil).GetByID), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByID", reflect.TypeOf((*MockShelterRepo)(nil).GetByID), ctx, id)
+}
+
+// List mocks base method.
+func (m *MockShelterRepo) List(ctx context.Context) ([]entity.Shelter, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "List", ctx)
+	ret0, _ := ret[0].([]entity.Shelter)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// List indicates an expected call of List.
+func (mr *MockShelterRepoMockRecorder) List(ctx any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockShelterRepo)(nil).List), ctx)
+}
+
+// Store mocks base method.
+func (m *MockShelterRepo) Store(ctx context.Context, sh *entity.Shelter) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Store", ctx, sh)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Store indicates an expected call of Store.
+func (mr *MockShelterRepoMockRecorder) Store(ctx, sh any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Store", reflect.TypeOf((*MockShelterRepo)(nil).Store), ctx, sh)
 }
 
 // MockVolunteerRepo is a mock of VolunteerRepo interface.
@@ -110,48 +124,63 @@ func (m *MockVolunteerRepo) EXPECT() *MockVolunteerRepoMockRecorder {
 	return m.recorder
 }
 
-// Create mocks base method.
-func (m *MockVolunteerRepo) Create(arg0 context.Context, arg1 entity.Volunteer) error {
+// GetByEmail mocks base method.
+func (m *MockVolunteerRepo) GetByEmail(ctx context.Context, email string) (entity.Volunteer, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Create", arg0, arg1)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// Create indicates an expected call of Create.
-func (mr *MockVolunteerRepoMockRecorder) Create(arg0, arg1 any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockVolunteerRepo)(nil).Create), arg0, arg1)
-}
-
-// GetArray mocks base method.
-func (m *MockVolunteerRepo) GetArray(arg0 context.Context) ([]entity.Volunteer, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetArray", arg0)
-	ret0, _ := ret[0].([]entity.Volunteer)
+	ret := m.ctrl.Call(m, "GetByEmail", ctx, email)
+	ret0, _ := ret[0].(entity.Volunteer)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// GetArray indicates an expected call of GetArray.
-func (mr *MockVolunteerRepoMockRecorder) GetArray(arg0 any) *gomock.Call {
+// GetByEmail indicates an expected call of GetByEmail.
+func (mr *MockVolunteerRepoMockRecorder) GetByEmail(ctx, email any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetArray", reflect.TypeOf((*MockVolunteerRepo)(nil).GetArray), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByEmail", reflect.TypeOf((*MockVolunteerRepo)(nil).GetByEmail), ctx, email)
 }
 
 // GetByID mocks base method.
-func (m *MockVolunteerRepo) GetByID(arg0 context.Context, arg1 uuid.UUID) (entity.Volunteer, error) {
+func (m *MockVolunteerRepo) GetByID(ctx context.Context, id string) (entity.Volunteer, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetByID", arg0, arg1)
+	ret := m.ctrl.Call(m, "GetByID", ctx, id)
 	ret0, _ := ret[0].(entity.Volunteer)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // GetByID indicates an expected call of GetByID.
-func (mr *MockVolunteerRepoMockRecorder) GetByID(arg0, arg1 any) *gomock.Call {
+func (mr *MockVolunteerRepoMockRecorder) GetByID(ctx, id any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByID", reflect.TypeOf((*MockVolunteerRepo)(nil).GetByID), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByID", reflect.TypeOf((*MockVolunteerRepo)(nil).GetByID), ctx, id)
+}
+
+// List mocks base method.
+func (m *MockVolunteerRepo) List(ctx context.Context) ([]entity.Volunteer, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "List", ctx)
+	ret0, _ := ret[0].([]entity.Volunteer)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// List indicates an expected call of List.
+func (mr *MockVolunteerRepoMockRecorder) List(ctx any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockVolunteerRepo)(nil).List), ctx)
+}
+
+// Store mocks base method.
+func (m *MockVolunteerRepo) Store(ctx context.Context, vl *entity.Volunteer) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Store", ctx, vl)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Store indicates an expected call of Store.
+func (mr *MockVolunteerRepoMockRecorder) Store(ctx, vl any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Store", reflect.TypeOf((*MockVolunteerRepo)(nil).Store), ctx, vl)
 }
 
 // MockAnimalRepo is a mock of AnimalRepo interface.
@@ -178,37 +207,52 @@ func (m *MockAnimalRepo) EXPECT() *MockAnimalRepoMockRecorder {
 	return m.recorder
 }
 
-// Create mocks base method.
-func (m *MockAnimalRepo) Create(arg0 context.Context, arg1 entity.Animal) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Create", arg0, arg1)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// Create indicates an expected call of Create.
-func (mr *MockAnimalRepoMockRecorder) Create(arg0, arg1 any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockAnimalRepo)(nil).Create), arg0, arg1)
-}
-
 // GetByID mocks base method.
-func (m *MockAnimalRepo) GetByID(arg0 context.Context, arg1 uuid.UUID) (entity.Animal, error) {
+func (m *MockAnimalRepo) GetByID(ctx context.Context, id string) (entity.Animal, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetByID", arg0, arg1)
+	ret := m.ctrl.Call(m, "GetByID", ctx, id)
 	ret0, _ := ret[0].(entity.Animal)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // GetByID indicates an expected call of GetByID.
-func (mr *MockAnimalRepoMockRecorder) GetByID(arg0, arg1 any) *gomock.Call {
+func (mr *MockAnimalRepoMockRecorder) GetByID(ctx, id any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByID", reflect.TypeOf((*MockAnimalRepo)(nil).GetByID), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByID", reflect.TypeOf((*MockAnimalRepo)(nil).GetByID), ctx, id)
+}
+
+// List mocks base method.
+func (m *MockAnimalRepo) List(ctx context.Context) ([]entity.Animal, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "List", ctx)
+	ret0, _ := ret[0].([]entity.Animal)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// List indicates an expected call of List.
+func (mr *MockAnimalRepoMockRecorder) List(ctx any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockAnimalRepo)(nil).List), ctx)
+}
+
+// Store mocks base method.
+func (m *MockAnimalRepo) Store(ctx context.Context, an *entity.Animal) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Store", ctx, an)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Store indicates an expected call of Store.
+func (mr *MockAnimalRepoMockRecorder) Store(ctx, an any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Store", reflect.TypeOf((*MockAnimalRepo)(nil).Store), ctx, an)
 }
 
 // UpdateOwner mocks base method.
-func (m *MockAnimalRepo) UpdateOwner(ctx context.Context, animalID, ownerID uuid.UUID, ownerType entity.OwnerType) error {
+func (m *MockAnimalRepo) UpdateOwner(ctx context.Context, animalID, ownerID string, ownerType entity.OwnerType) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateOwner", ctx, animalID, ownerID, ownerType)
 	ret0, _ := ret[0].(error)

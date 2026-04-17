@@ -3,23 +3,27 @@ package usecase
 import (
 	"adoptme/internal/entity"
 	"context"
-
-	"github.com/google/uuid"
 )
 
 type (
-	User interface {
-		RegisterShelter(context.Context, entity.Shelter) error
-		RegisterVolunteer(context.Context, entity.Volunteer) error
+	Shelter interface {
+		Register(ctx context.Context, name, email, password string) (entity.Shelter, error)
+		Login(ctx context.Context, email, password string) (string, error)
+	}
+
+	Volunteer interface {
+		Register(ctx context.Context, name, email, password string) (entity.Volunteer, error)
+		Login(ctx context.Context, email, password string) (string, error)
 	}
 
 	Catalog interface {
-		ListShelters(context.Context) ([]entity.Shelter, error)
-		ListVolunteer(context.Context) ([]entity.Volunteer, error)
+		ListShelters(ctx context.Context) ([]entity.Shelter, error)
+		ListVolunteer(ctx context.Context) ([]entity.Volunteer, error)
+		ListAnimal(ctx context.Context) ([]entity.Animal, error)
 	}
 
 	Adoption interface {
-		RegisterAnimal(context.Context, entity.Animal) error
-		TransferAnimal(ctx context.Context, animalID uuid.UUID, newOwnerID uuid.UUID, newOwnerType entity.OwnerType) error
+		RegisterAnimal(ctx context.Context, name, ownerId string, ownerType entity.OwnerType) (entity.Animal, error)
+		TransferAnimal(ctx context.Context, animalID, newOwnerID string, newOwnerType entity.OwnerType) error
 	}
 )
