@@ -5,6 +5,7 @@ import (
 	"adoptme/internal/repo"
 	"adoptme/pkg/jwt"
 	"context"
+	"errors"
 	"fmt"
 	"time"
 
@@ -57,7 +58,11 @@ func (u UseCase) Register(ctx context.Context, name, email, password string) (en
 func (u UseCase) Login(ctx context.Context, email, password string) (string, error) {
 	user, err := u.vlRepo.GetByEmail(ctx, email)
 	if err != nil {
-		return "", entity.ErrInvalidCredentials
+		if errors.Is(err, entity.ErrUserNotFound) {
+			return "", entity.ErrInvalidCredentials
+		}
+
+		return "", fmt.Errorf("VolunteerUseCase - Login - u.vlRepo.GetByEmail: %w", err)
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(password))

@@ -32,7 +32,7 @@ func (r AnimalRepo) Store(ctx context.Context, an *entity.Animal) error {
 		return fmt.Errorf("AnimalRepo - Store - r.Builder: %w", err)
 	}
 
-	_, err = r.Pool.Exec(ctx, sql, args)
+	_, err = r.Pool.Exec(ctx, sql, args...)
 	if err != nil {
 		return fmt.Errorf("AnimalRepo - Store - r.Pool.Exec: %w", err)
 	}
@@ -50,7 +50,7 @@ func (r AnimalRepo) GetByID(ctx context.Context, id string) (entity.Animal, erro
 		return entity.Animal{}, fmt.Errorf("AnimalRepo - GetByID - r.Builder: %w", err)
 	}
 
-	row := r.Pool.QueryRow(ctx, sql, args)
+	row := r.Pool.QueryRow(ctx, sql, args...)
 
 	var an entity.Animal
 	err = row.Scan(&an.ID, &an.OwnerID, &an.OwnerType, &an.Name, &an.CreatedAt, &an.UpdatedAt)
@@ -76,7 +76,7 @@ func (r AnimalRepo) UpdateOwner(ctx context.Context, animalID string, ownerID st
 		return fmt.Errorf("AnimalRepo - UpdateOwner - r.Builder: %w", err)
 	}
 
-	_, err = r.Pool.Exec(ctx, sql, args)
+	_, err = r.Pool.Exec(ctx, sql, args...)
 	if err != nil {
 		return fmt.Errorf("AnimalRepo - UpdateOwner - r.Pool.Exec: %w", err)
 	}
@@ -93,7 +93,7 @@ func (r AnimalRepo) List(ctx context.Context) ([]entity.Animal, error) {
 		return nil, fmt.Errorf("AnimalRepo - List - r.Builder: %w", err)
 	}
 
-	rows, err := r.Pool.Query(ctx, sql, args)
+	rows, err := r.Pool.Query(ctx, sql, args...)
 	if err != nil {
 		return nil, fmt.Errorf("AnimalRepo - List - r.Pool.Query: %w", err)
 	}

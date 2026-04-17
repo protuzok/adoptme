@@ -32,7 +32,7 @@ func (r ShelterRepo) Store(ctx context.Context, sh *entity.Shelter) error {
 		return fmt.Errorf("ShelterRepo - Store - r.Builder: %w", err)
 	}
 
-	_, err = r.Pool.Exec(ctx, sql, args)
+	_, err = r.Pool.Exec(ctx, sql, args...)
 	if err != nil {
 		if pgErr, ok := errors.AsType[*pgconn.PgError](err); ok && pgErr.Code == "23505" {
 			return entity.ErrUserAlreadyExists
@@ -64,7 +64,7 @@ func (r ShelterRepo) getUser(ctx context.Context, column, value string) (entity.
 
 	sh := entity.Shelter{}
 
-	err = r.Pool.QueryRow(ctx, sql, args).
+	err = r.Pool.QueryRow(ctx, sql, args...).
 		Scan(&sh.ID, &sh.Email, &sh.Name, &sh.PasswordHash, &sh.CreatedAt, &sh.UpdatedAt)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
@@ -85,7 +85,7 @@ func (r ShelterRepo) List(ctx context.Context) ([]entity.Shelter, error) {
 		return nil, fmt.Errorf("ShelterRepo - List - r.Builder: %w", err)
 	}
 
-	rows, err := r.Pool.Query(ctx, sql, args)
+	rows, err := r.Pool.Query(ctx, sql, args...)
 	if err != nil {
 		return nil, fmt.Errorf("ShelterRepo - List - r.Pool.Query: %w", err)
 	}

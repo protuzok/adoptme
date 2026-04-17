@@ -32,7 +32,7 @@ func (r VolunteerRepo) Store(ctx context.Context, vl *entity.Volunteer) error {
 		return fmt.Errorf("VolunteerRepo - Store - r.Builder: %w", err)
 	}
 
-	_, err = r.Pool.Exec(ctx, sql, args)
+	_, err = r.Pool.Exec(ctx, sql, args...)
 	if err != nil {
 		if pgErr, ok := errors.AsType[*pgconn.PgError](err); ok && pgErr.Code == "23505" {
 			return entity.ErrUserAlreadyExists
@@ -64,7 +64,7 @@ func (r VolunteerRepo) getUser(ctx context.Context, column, value string) (entit
 
 	vl := entity.Volunteer{}
 
-	err = r.Pool.QueryRow(ctx, sql, args).
+	err = r.Pool.QueryRow(ctx, sql, args...).
 		Scan(&vl.ID, &vl.Email, &vl.Name, &vl.PasswordHash, &vl.CreatedAt, &vl.UpdatedAt)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
@@ -85,7 +85,7 @@ func (r VolunteerRepo) List(ctx context.Context) ([]entity.Volunteer, error) {
 		return nil, fmt.Errorf("VolunteerRepo - List - r.Builder: %w", err)
 	}
 
-	rows, err := r.Pool.Query(ctx, sql, args)
+	rows, err := r.Pool.Query(ctx, sql, args...)
 	if err != nil {
 		return nil, fmt.Errorf("VolunteerRepo - List - r.Pool.Query: %w", err)
 	}
