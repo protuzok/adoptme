@@ -44,6 +44,9 @@ func (r *V1) transfer(c echo.Context) error {
 	}
 
 	animalID := c.Param("id")
+	if err := r.v.Var(animalID, "required,uuid"); err != nil {
+		return c.JSON(http.StatusBadRequest, response.Error{Error: "invalid animal id"})
+	}
 
 	err := r.a.TransferAnimal(c.Request().Context(), animalID, body.NewOwnerID, body.NewOwnerType)
 	if err != nil {
