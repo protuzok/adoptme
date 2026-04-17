@@ -3,6 +3,8 @@ package v1
 import (
 	"adoptme/internal/controller/restapi/v1/request"
 	"adoptme/internal/controller/restapi/v1/response"
+	"adoptme/internal/entity"
+	"errors"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -51,6 +53,11 @@ func (r *V1) transfer(c echo.Context) error {
 	err := r.a.TransferAnimal(c.Request().Context(), animalID, body.NewOwnerID, body.NewOwnerType)
 	if err != nil {
 		r.l.Error(err, "restapi - v1 - transfer")
+
+		if errors.Is(err, entity.ErrAnimalNotFound) {
+			return c.JSON(http.StatusNotFound, response.Error{Error: "animal not found"})
+		}
+
 		return c.JSON(http.StatusInternalServerError, response.Error{Error: "internal server error"})
 	}
 
