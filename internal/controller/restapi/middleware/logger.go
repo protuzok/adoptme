@@ -15,7 +15,7 @@ func buildRequestMessage(c echo.Context) string {
 	result.WriteString(" - ")
 	result.WriteString(c.Request().Method)
 	result.WriteString(" ")
-	result.WriteString(c.Request().RequestURI)
+	result.WriteString(c.Request().URL.Path)
 	result.WriteString(" - ")
 	result.WriteString(strconv.Itoa(c.Response().Status))
 	result.WriteString(" ")
