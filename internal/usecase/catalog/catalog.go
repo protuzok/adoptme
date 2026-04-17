@@ -8,16 +8,16 @@ import (
 )
 
 type UseCase struct {
+	animalRepo    repo.AnimalRepo
 	shelterRepo   repo.ShelterRepo
 	volunteerRepo repo.VolunteerRepo
-	animalRepo    repo.AnimalRepo
 }
 
-func New(shRepo repo.ShelterRepo, vlRepo repo.VolunteerRepo, anRepo repo.AnimalRepo) *UseCase {
+func New(anRepo repo.AnimalRepo, shRepo repo.ShelterRepo, vlRepo repo.VolunteerRepo) *UseCase {
 	return &UseCase{
+		animalRepo:    anRepo,
 		shelterRepo:   shRepo,
 		volunteerRepo: vlRepo,
-		animalRepo:    anRepo,
 	}
 }
 

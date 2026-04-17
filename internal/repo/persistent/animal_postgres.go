@@ -18,7 +18,7 @@ type AnimalRepo struct {
 	*postgres.Postgres
 }
 
-func NewAnimal(pg *postgres.Postgres) *AnimalRepo {
+func NewAnimalRepo(pg *postgres.Postgres) *AnimalRepo {
 	return &AnimalRepo{pg}
 }
 

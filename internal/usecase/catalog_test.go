@@ -20,7 +20,7 @@ func catalogUseCase(t *testing.T) (*catalog.UseCase, *MockShelterRepo, *MockVolu
 	vlRepo := NewMockVolunteerRepo(mockCtl)
 	anRepo := NewMockAnimalRepo(mockCtl)
 
-	useCase := catalog.New(shRepo, vlRepo, anRepo)
+	useCase := catalog.New(anRepo, shRepo, vlRepo)
 
 	return useCase, shRepo, vlRepo, anRepo
 }
