@@ -21,31 +21,34 @@ The application is structured into clearly separated layers:
 
 Since this is an actively evolving pet project, features are implemented incrementally.
 
-### ✅ Currently Implemented (Core Domain)
+### ✅ Currently Implemented (Core Domain & API)
 - **Domain Entities**: Defined structures for Shelters, Volunteers, and Animals.
-- **Core Business Logic (UseCases)**: Implemented the `Adoption` use case, handling the complex logic of transferring animal ownership between different actors.
+- **Core Business Logic (UseCases)**: Implemented the `Adoption` use case, as well as divided `Shelter` and `Volunteer` use cases handling registration, authentication and transfer logics.
+- **HTTP Delivery & Routing**: REST API is fully implemented utilizing the **Echo** framework, featuring structured routes, middleware (Auth, Logger, Recovery), and custom structured JSON responses.
+- **Security**: Password hashing via `bcrypt` and stateless authentication applying **JWT** (`golang-jwt`).
+- **Configuration Management**: 12-factor app compliant configuration reading from Environment Variables utilizing `caarlos0/env`.
 - **Data Layer**: PostgreSQL repository adapters utilizing robust SQL generation.
 - **Unit Testing**: Strong coverage of business logic using `gomock` and `testify`.
 
 ### 🚧 Planned / Upcoming
-- [ ] **HTTP Delivery**: REST API implementation using the `Echo` framework.
-- [ ] **Containerization**: `docker-compose` setup for painless local development (App + DB).
+- [ ] **Containerization**: `docker-compose` setup for painless local development (App + DB) and environment configuration.
 - [ ] **Database Setup**: Schema migrations using `golang-migrate/migrate`.
 - [ ] **Extended Functionality**: 
   - Articles/Blog publishing for shelters and volunteers.
   - Financial donations for specific animals/shelters.
-- [ ] **Advanced Tech Exploration**: Integration tests, potential gRPC endpoints, and advanced logging.
+- [ ] **Advanced Tech Exploration**: Integration tests, potential gRPC endpoints, and maybe rewriting zerolog to slog.
 
 ## 🛠 Tech Stack
 
 **Currently in use:**
 * [Go](https://golang.org/) (v1.26)
+* [Echo](https://echo.labstack.com/) (High performance, minimalist Go web framework)
 * [PostgreSQL](https://www.postgresql.org/) (via `jackc/pgx`)
 * [Squirrel](https://github.com/Masterminds/squirrel) (SQL query builder)
 * [Testify](https://github.com/stretchr/testify) & [gomock](https://github.com/uber/mock) (Testing)
 
 **Targeting for future implementation:**
-* *Echo (Router), golang-migrate, Docker.*
+* *golang-migrate, Docker.*
 
 ---
 *This is a portfolio project aimed at demonstrating complex system design, clean architecture, and modern Go development practices.*
