@@ -26,7 +26,7 @@ Since this is an actively evolving pet project, features are implemented increme
 - **Core Business Logic (UseCases)**: Implemented the `Adoption` use case, as well as divided `Shelter` and `Volunteer` use cases handling registration, authentication and transfer logics.
 - **HTTP Delivery & Routing**: REST API is fully implemented utilizing the **Echo** framework, featuring structured routes, middleware (Auth, Logger, Recovery), and custom structured JSON responses.
 - **Security**: Password hashing via `bcrypt` and stateless authentication applying **JWT** (`golang-jwt`).
-- **Configuration Management**: 12-factor app compliant configuration reading from Environment Variables utilizing `caarlos0/env`.
+- **Configuration Management**: app compliant configuration reading from Environment Variables utilizing `caarlos0/env`.
 - **Data Layer**: PostgreSQL repository adapters utilizing robust SQL generation.
 - **Unit Testing**: Strong coverage of business logic using `gomock` and `testify`.
 
